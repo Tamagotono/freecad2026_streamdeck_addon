@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
+
+  <name>Stream Deck Addon</name>
+  <description>FreeCAD addon to use an Elgato Stream Deck macropad as an input device.</description>
+  <version>0.1.7</version>
+  <date>2024-03-06</date>
+  <license file="LICENSE">GPL-3.0-or-later</license>
+  <url branch="main" type="repository">https://github.com/Giraut/freecad_streamdeck_addon</url>
+  <url type="readme">https://github.com/Giraut/freecad_streamdeck_addon/raw/main/README.md</url>
+  <author>Giraut</author>
+  <icon>logo.svg</icon>
+
+  <depend optional="false" type="python">streamdeck</depend>
+  <depend optional="false" type="python">pillow</depend>
+
+  <content>
+    <workbench/>	<!-- This addon is neither a workbench, a macro or a preference pack, but FreeCAD requires at least one content entry to load it -->
+  </content>
+
+</package>
