@@ -50,9 +50,11 @@ class Action():
     if self.toolbar != toolbar:
       self.toolbar = toolbar
       self.action = action
-      self.title = action.iconText()
 
-    self.iconid = action.icon().cacheKey()
+    new_iconid = action.icon().cacheKey()
+    if new_iconid != self.iconid:
+      self.title = action.iconText()
+    self.iconid = new_iconid
     self.enabled = action.isEnabled()
 
 

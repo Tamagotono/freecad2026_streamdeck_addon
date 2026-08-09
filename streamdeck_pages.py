@@ -117,16 +117,24 @@ class StreamDeckPages():
     for t in tbactions.toolbars:
       if t not in repeated_toolbars:
 
-        # Get the list of key strings for this toolbar
-        keys = ["{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}".
+        # Get the list of key strings for this toolbar. When a parent action is
+        # expanded, skip it and carry its left bracket to the first sub-item so
+        # the sub-items shift into the parent's slot.
+        keys = []
+        carry_lbc = ""
+        for n in tbactions.toolbar_actions[t]:
+          if n in tbactions.expanded_actions and tbactions.expanded_actions[n]:
+            carry_lbc = exbc
+            continue
+          lbc = carry_lbc or (exbc if n in tbactions.expanded_actions else "")
+          carry_lbc = ""
+          rbc = exbc if not tbactions.expanded_actions.get(n, True) or \
+		tbactions.actions[n].islastsubaction else ""
+          keys.append("{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}".
 		format(t, n, 1 if tbactions.actions[n].enabled else 0,
 			tbactions.actions[n].iconid,
 			tbactions.actions[n].title, t,
-			exbc if n in tbactions.expanded_actions else "",
-			exbc if not tbactions.expanded_actions.get(n, True) or \
-				tbactions.actions[n].islastsubaction else "",
-			sv = self.SV)
-		for n in tbactions.toolbar_actions[t]]
+			lbc, rbc, sv = self.SV))
 
         indiv_toolbar_page_maker_ctr = 0
 
