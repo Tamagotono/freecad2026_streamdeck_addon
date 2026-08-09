@@ -14,6 +14,7 @@ class StreamDeckPreferencePage:
   def __init__(self):
 
     self.form = QtGui.QWidget()
+    self.form.setWindowTitle("General")
     outer = QtGui.QVBoxLayout(self.form)
     outer.setContentsMargins(8, 8, 8, 8)
     outer.setSpacing(8)
