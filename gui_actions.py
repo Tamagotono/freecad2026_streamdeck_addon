@@ -68,7 +68,7 @@ class Action():
       qbf.close()
       img = Image.open(io.BytesIO(bytes(qbf.data())))
 
-    except:
+    except Exception:
       img = None
 
     return img

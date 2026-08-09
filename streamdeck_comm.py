@@ -110,7 +110,7 @@ class StreamDeck():
         if self.dev is not None:
           try:
             self.dev.close()
-          except:
+          except Exception:
             pass
 
       # Try to match a device to open
@@ -135,7 +135,7 @@ class StreamDeck():
               info.append('  Error opening the device: {}"'.format(e))
               try:
                 self.dev.close()
-              except:
+              except Exception:
                 pass
               self.dev = None
 
@@ -167,19 +167,19 @@ class StreamDeck():
       # Try to reset the Stream Deck
       try:
         self.dev.reset()
-      except:
+      except Exception:
         pass
 
       # Set the brightness of the Stream Deck's display to 0 to preserve it
       try:
         self.dev.set_brightness(0)
-      except:
+      except Exception:
         pass
 
       # Try to close the Stream Deck
       try:
         self.dev.close()
-      except:
+      except Exception:
         pass
 
       self.dev = None
@@ -326,7 +326,7 @@ class StreamDeck():
       image = PILHelper.create_scaled_image(self.dev, image,
 						margins = self.margins)
 
-    except:
+    except Exception:
       image = PILHelper.create_scaled_image(self.dev, self.broken_image,
 						margins = self.margins)
 
@@ -359,7 +359,7 @@ class StreamDeck():
 			(self.margins[3] - 2, yb - self.margins[2] - 2)],
 			width = 5, fill = color)
             break
-          except:
+          except Exception:
             pass
 
       if right_bracket_color:
@@ -371,7 +371,7 @@ class StreamDeck():
 			(xr - self.margins[1] + 2, yb - self.margins[2] - 2)],
 			width = 5, fill = color)
             break
-          except:
+          except Exception:
             pass
 
     # Upload the image to the key

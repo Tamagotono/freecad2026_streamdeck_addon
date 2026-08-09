@@ -253,7 +253,7 @@ def streamdeck_update():
   # Get Stream Deck key press events
   try:
     input_events = streamdeck.get_input_events(params.long_keypress_duration)
-  except:
+  except Exception:
     streamdeck.close()
     del(tbactions)
     del(pages)
@@ -368,7 +368,7 @@ def streamdeck_update():
           for keyno in range(streamdeck.nbkeys):
             try:
               streamdeck.set_key(keyno, None)
-            except:
+            except Exception:
               streamdeck.close()
               del(tbactions)
               del(pages)
@@ -390,7 +390,7 @@ def streamdeck_update():
 
             try:
               streamdeck.set_key(keyno, img, tt, bt, lbc, rbc)
-            except:
+            except Exception:
               streamdeck.close()
               del(tbactions)
               del(pages)
@@ -407,7 +407,7 @@ def streamdeck_update():
     try:
       streamdeck.set_brightness(params.min_brightness, params.max_brightness,
 				params.fade_time, ua)
-    except:
+    except Exception:
       streamdeck.close()
       del(tbactions)
       del(pages)
