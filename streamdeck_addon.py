@@ -61,12 +61,12 @@ class UserActivity():
       return True
 
     if self.cursor_pos is None:
-      self.cursor_pos = main_window.cursor().pos()
+      self.cursor_pos = self.main_window.cursor().pos()
       self.last_activity_tstamp = now
       return True
 
     prev_main_window_is_active = self.main_window_is_active
-    self.main_window_is_active = main_window.isActiveWindow()
+    self.main_window_is_active = self.main_window.isActiveWindow()
 
     prev_cursor_pos = self.cursor_pos
 
