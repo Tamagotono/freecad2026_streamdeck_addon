@@ -112,6 +112,17 @@ def action_changed():
 
 
 
+def _teardown_session():
+  """Close the Stream Deck and delete the session objects
+  """
+  global tbactions, pages, useractivity
+  streamdeck.close()
+  del tbactions
+  del pages
+  del useractivity
+
+
+
 def streamdeck_update():
   """Mirror the current content of the Freecad toolbars onto the stream deck
   """
@@ -167,10 +178,7 @@ def streamdeck_update():
 
       # Close the device if needed
       if streamdeck.is_open():
-        streamdeck.close()
-        del(tbactions)
-        del(pages)
-        del(useractivity)
+        _teardown_session()
 
       # Try to reopen the device immediately with an unknown previous status, so
       # information is displayed upon trying to open the device
@@ -254,10 +262,7 @@ def streamdeck_update():
   try:
     input_events = streamdeck.get_input_events(params.long_keypress_duration)
   except Exception:
-    streamdeck.close()
-    del(tbactions)
-    del(pages)
-    del(useractivity)
+    _teardown_session()
 
   # Is the Stream Deck still open?
   if streamdeck.is_open():
@@ -369,10 +374,7 @@ def streamdeck_update():
             try:
               streamdeck.set_key(keyno, None)
             except Exception:
-              streamdeck.close()
-              del(tbactions)
-              del(pages)
-              del(useractivity)
+              _teardown_session()
               break
 
       # Update the keys to display the current page as needed
@@ -391,10 +393,7 @@ def streamdeck_update():
             try:
               streamdeck.set_key(keyno, img, tt, bt, lbc, rbc)
             except Exception:
-              streamdeck.close()
-              del(tbactions)
-              del(pages)
-              del(useractivity)
+              _teardown_session()
               break
 
   # Determine if the user is active and set the brightness of the Stream Deck's
@@ -408,10 +407,7 @@ def streamdeck_update():
       streamdeck.set_brightness(params.min_brightness, params.max_brightness,
 				params.fade_time, ua)
     except Exception:
-      streamdeck.close()
-      del(tbactions)
-      del(pages)
-      del(useractivity)
+      _teardown_session()
 
   # Reschedule ourselves
   timer.start(timer_reschedule_every_ms)
