@@ -37,6 +37,10 @@ class Action():
     self.islastsubaction = False	# If the action is a menu item, whether
 					# it's the last item in the menu
 
+    self._cached_pil_image = None
+    self._cached_pil_iconid = None
+    self._cached_pil_enabled = None
+
 
 
   def update(self, toolbar, action):
@@ -57,6 +61,10 @@ class Action():
     """Convert the enabled or disabled versions of the QIcon into a PIL image
     """
 
+    if self.iconid == self._cached_pil_iconid and \
+		self.enabled == self._cached_pil_enabled:
+      return self._cached_pil_image
+
     try:
       pixmap = self.action.icon().pixmap(128, 128,
 					mode = QtGui.QIcon.Mode.Normal \
@@ -70,6 +78,10 @@ class Action():
 
     except Exception:
       img = None
+
+    self._cached_pil_image = img
+    self._cached_pil_iconid = self.iconid
+    self._cached_pil_enabled = self.enabled
 
     return img
 
