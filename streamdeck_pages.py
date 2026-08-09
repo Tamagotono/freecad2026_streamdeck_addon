@@ -136,6 +136,9 @@ class StreamDeckPages():
 			tbactions.actions[n].title, t,
 			lbc, rbc, sv = self.SV))
 
+        if not keys:
+          continue
+
         indiv_toolbar_page_maker_ctr = 0
 
         # Add all the keys to the pages
