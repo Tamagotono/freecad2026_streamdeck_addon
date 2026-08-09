@@ -1,5 +1,5 @@
 # FreeCAD Stream Deck Addon
-### Version 0.1.7
+### Version 0.2.0
 
 * [Usage](#Usage)
 * [Installation](#Installation)
@@ -70,11 +70,12 @@ The HIDAPI library must be installed for the streamdeck Python module to work co
 
 ## Settings
 
-In the FreeCAD menu, go to **Tools ▶ Edit Parameters**.  All the settings to control the addon are under `BaseApp ▶ StreamDeckAddon`.
+Settings can be configured in two ways:
 
-![Parameter Editor](images/parameter_editor.png)
+- **Edit ▶ Preferences ▶ Stream Deck** — the recommended way. Changes take effect when you click OK or Apply.
+- **Tools ▶ Edit Parameters ▶ BaseApp ▶ StreamDeckAddon** — the advanced parameter editor. Changes take effect immediately.
 
-The ones you're really interested in are:
+The settings are:
 
 - **Enabled**
 
@@ -98,17 +99,26 @@ The ones you're really interested in are:
 
 - **ToolbarLists ▶ ToolbarsExcluded_CommaSeparated**
 
-  Comma-separated list of names of toolbars you never want displayed on the Stream Deck regardless of whether they're enabled in the main window, to reduce clutter. E.g. `Help,Navigation`. Leave blank to display all the toolbars on the Stream Deck.
+  Comma-separated list of names of toolbars you never want displayed on the Stream Deck regardless of whether they're enabled in the main window, to reduce clutter. E.g. `Workbench, Edit Mode`. Leave blank to display all the toolbars on the Stream Deck.
 
 - **ToolbarLists ▶ ToolbarsOnEveryPage_CommaSeparated**
 
-  Comma-separated list of names of toolbars you want repeated on all the Stream Deck pages, so they're always available regardless of the particular toolbar page you're in.  E.g. `Edit,View`.  Note that those permanently-displayed toolbars are laid out on the Stream Deck in the order they're listed.
+  Comma-separated list of names of toolbars you want repeated on all the Stream Deck pages, so they're always available regardless of the particular toolbar page you're in. E.g. `Constraints, Geometries`. Note that those permanently-displayed toolbars are laid out on the Stream Deck in the order they're listed.
 
   If your Stream Deck has enough keys - Stream Deck XL for example - you can have more permanently-displayed toolbar tools without multiplying the number of pages.
 
   If your Stream Deck has fewer keys, you may want to have fewer permanently-displayed toolbar tools to free up more keys per page.
 
   Leave blank if you don't want any toolbars repeated on all the pages.
+
+  > **Finding toolbar names:** Toolbar names must match FreeCAD's internal Qt object names, which may differ from the labels shown in the FreeCAD UI and are case-sensitive. Names may contain spaces — separate multiple entries with commas or semicolons. The addon prints detected toolbar names to the FreeCAD Report View whenever the toolbar list changes, which is the easiest way to find the correct names.
+  >
+  > Known names for common workbenches:
+  >
+  > | Workbench | Toolbar names |
+  > |---|---|
+  > | All | `Workbench`, `Edit Mode` |
+  > | Sketcher | `Geometries`, `Constraints`, `Sketcher Tools`, `B-Spline Tools`, `Visual Helpers` |
 
 - **Display ▶ Brightness ▶ BrightnessPercent**
 
@@ -132,7 +142,7 @@ All setting changes take effect immediately. You don't need to restart FreeCAD.
   Either the addon has control of the Stream Deck device or the other
   application does, but not both at the same time.
 
-- Tested with FreeCAD 0.22 on Linux and Windows, with a Stream Deck Mk2, Stream Deck XL and Stream Deck +. It may or may not work with other models.
+- Tested with FreeCAD 1.1.x on Linux, and FreeCAD 0.22 on Linux and Windows, with a Stream Deck Mk2, Stream Deck XL and Stream Deck +. It may or may not work with other models.
 
 - This software is still under development. Please bear with me as I make it nicer 🙂
 
