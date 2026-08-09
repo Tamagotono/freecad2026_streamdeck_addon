@@ -142,7 +142,7 @@ class UserParameters():
     # Attach our callback to detect when parameters are changed by the user
     self.__paramobserver = _ParamObserver()
     self.__top_level_param_group = self.__FC.ParamGet(self.__top_level_group)
-    self.__top_level_param_group. AttachManager(self.__paramobserver)
+    self.__top_level_param_group.AttachManager(self.__paramobserver)
 
     # Synchronize the parameters for the first time
     self.sync(force_sync = True)
