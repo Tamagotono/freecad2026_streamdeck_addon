@@ -242,11 +242,12 @@ class UserParameters():
           pg_set[ptype](pname, getattr(self, varname))
 
     # Turn the excluded_toolbars and repeated_toolbars comma-separated strings
-    # back into lists
-    # Split the strings also on semicolons, colons, spaces and tabs while w're
-    # at it
-    self.excluded_toolbars = re.split("[,;: \t]", self.excluded_toolbars)
-    self.repeated_toolbars = re.split("[,;: \t]", self.repeated_toolbars)
+    # back into lists, splitting on commas or semicolons and stripping
+    # surrounding whitespace so names containing spaces are preserved
+    self.excluded_toolbars = [t.strip() for t in \
+				re.split("[,;]", self.excluded_toolbars) if t.strip()]
+    self.repeated_toolbars = [t.strip() for t in \
+				re.split("[,;]", self.repeated_toolbars) if t.strip()]
 
     # Indicate that the parameters have been synchronized
     return True
