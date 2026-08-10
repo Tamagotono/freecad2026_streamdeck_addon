@@ -112,7 +112,10 @@ class StreamDeckPages():
     prev_page_toolbar = None
 
     indiv_toolbar_page_maker_ctr = 0
-    page_marker = lambda: "{}#{}".format(t, indiv_toolbar_page_maker_ctr)
+
+    def page_marker():
+      # Reads current t and counter on each call (intentional closure over loop vars)
+      return "{}#{}".format(t, indiv_toolbar_page_maker_ctr)
 
     for t in tbactions.toolbars:
       if t not in repeated_toolbars:
