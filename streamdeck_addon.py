@@ -397,7 +397,7 @@ def streamdeck_update():
 
             try:
               streamdeck.set_key(keyno, img, key.toptext, key.bottomtext,
-					key.lbc, key.rbc)
+					key.left_brkt_clr, key.right_brkt_clr)
             except Exception:
               _teardown_session()
               break

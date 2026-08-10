@@ -22,7 +22,7 @@ class StreamDeckPages():
 
   # Named tuple for the 8 fields stored in each key string
   KeyFields = namedtuple("KeyFields",
-    ["toolbar", "name", "enabled", "iconid", "toptext", "bottomtext", "lbc", "rbc"])
+    ["toolbar", "name", "enabled", "iconid", "toptext", "bottomtext", "left_brkt_clr", "right_brkt_clr"])
 
   def __init__(self, nb_streamdeck_keys, with_nav_keys):
     """__init__ method
@@ -140,15 +140,15 @@ class StreamDeckPages():
           if n in tbactions.expanded_actions and tbactions.expanded_actions[n]:
             carry_lbc = exp_brkt_clr
             continue
-          lbc = carry_lbc or (exp_brkt_clr if n in tbactions.expanded_actions else "")
+          left_brkt_clr = carry_lbc or (exp_brkt_clr if n in tbactions.expanded_actions else "")
           carry_lbc = ""
-          rbc = exp_brkt_clr if not tbactions.expanded_actions.get(n, True) or \
+          right_brkt_clr = exp_brkt_clr if not tbactions.expanded_actions.get(n, True) or \
 		tbactions.actions[n].islastsubaction else ""
           keys.append("{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}".
 		format(t, n, 1 if tbactions.actions[n].enabled else 0,
 			tbactions.actions[n].iconid,
 			tbactions.actions[n].title, t,
-			lbc, rbc, sv = self.SV))
+			left_brkt_clr, right_brkt_clr, sv = self.SV))
 
         if not keys:
           continue
@@ -286,7 +286,7 @@ class StreamDeckPages():
 						"*?{sv}{}{sv}{}{sv}{}{sv}{}".
 						format(k.toolbar, k.name,
 							k.toptext, k.bottomtext,
-							k.lbc, k.rbc,
+							k.left_brkt_clr, k.right_brkt_clr,
 							sv = self.SV,
 							sk = self.SK))\
 					for k in [self.parse_key(ks) \
