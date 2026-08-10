@@ -4,6 +4,7 @@
 ## Modules
 #
 
+
 import re
 from collections import namedtuple
 
@@ -54,24 +55,34 @@ class StreamDeckPages():
     a ToolbarActions object
     """
 
-    # Get the lowercase color names
     rep_brkt_clr = bracket_color_repeated_toolbars.lower()
     nav_brkt_clr = bracket_color_page_nav_keys.lower()
     exp_brkt_clr = brackets_color_expandable_tools.lower()
 
-    # Compose the new pages to display on the Stream Deck: the pages are
-    # described in a multiline string with each line in the following format:
-    #
-    # <key0>SK<key1>SK...SK<keyN>
-    #
-    # and each key is composed of:
-    # <toolbarmarker>SV[action]SV[0|1]SV[iconid]SV[toptext]SV[bottomtext]SV
-    #    [leftbracketcolor]SV[rightbracketcolor]
+    empty_new_pages, last_empty_new_page_i = self._build_page_template(
+        tbactions, repeated_toolbars, rep_brkt_clr, exp_brkt_clr)
 
-    # Create a pattern of one or more pages (hopefully just one) that contain
-    # the keys for the actions of the toolbars that should be repeated on
-    # every page at the beginning, the page navigation keys at the end and
-    # at least one free key slot in-between.
+    self._fill_toolbar_pages(tbactions, repeated_toolbars, empty_new_pages,
+        last_empty_new_page_i, nav_brkt_clr, exp_brkt_clr)
+
+
+
+  def _build_page_template(self, tbactions, repeated_toolbars,
+				rep_brkt_clr, exp_brkt_clr):
+    """Build one or more page templates that will be reused for each toolbar.
+
+    Each template has the repeated toolbar keys pre-filled and contains
+    [toolbar], [key], [pageprev] and [pagenext] placeholders for
+    _fill_toolbar_pages to replace.
+
+    Pages are SK-separated strings of SV-separated key fields:
+      toolbar_marker SV name SV enabled SV iconid SV toptext SV bottomtext
+        SV left_bracket_color SV right_bracket_color
+
+    Returns (empty_new_pages, last_empty_new_page_i).
+    """
+
+    # Build the key strings for the repeated toolbars
     keys = []
     for t in repeated_toolbars:
       if t in tbactions.toolbars:
@@ -91,12 +102,12 @@ class StreamDeckPages():
 
     reserve_nb_last_keys = 2 if self.with_nav_keys else 0
     last_2_page_keys = "{sk}[pageprev]{sk}[pagenext]".format(sk = self.SK) \
-				if self.with_nav_keys else ""
+                    if self.with_nav_keys else ""
 
     empty_new_pages = []
 
     # The last page of the new empty pages should have however many reserved
-    # slots and at lease 1 empty slot for a key left
+    # slots and at least 1 empty slot for a key left
     while nbkeys > self.nb_streamdeck_keys - reserve_nb_last_keys - 1:
       empty_new_pages.append(self.SK.join(keys[:self.nb_streamdeck_keys - \
 						reserve_nb_last_keys]) + \
@@ -115,9 +126,18 @@ class StreamDeckPages():
 						reserve_nb_last_keys)]) \
 				+ last_2_page_keys)
 
-    last_empty_new_page_i = len(empty_new_pages) - 1
+    return empty_new_pages, len(empty_new_pages) - 1
 
-    # Create the pages of action keys
+
+
+  def _fill_toolbar_pages(self, tbactions, repeated_toolbars, empty_new_pages,
+				last_empty_new_page_i, nav_brkt_clr, exp_brkt_clr):
+    """Fill the page template with keys for each non-repeated toolbar,
+    expanding [toolbar], [key], [pageprev] and [pagenext] placeholders as
+    new pages are appended.
+    Mutates self.pages.
+    """
+
     self.previous_pages = self.pages
     self.pages = []
     prev_page_toolbar = None
