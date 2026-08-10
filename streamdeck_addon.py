@@ -79,9 +79,13 @@ class UserActivity():
     if any(external_activity_flags):
       self.last_activity_tstamp = now
 
-    return now - self.last_activity_tstamp < inactivity_time \
-			if inactivity_time > (now - prev_check_tstamp) * 2 \
-		else self.last_activity_tstamp == now
+    # If the inactivity threshold is at least twice the polling interval we can
+    # measure it reliably; otherwise the threshold is too short to detect between
+    # polls, so only report active if activity was seen on this exact tick.
+    if inactivity_time > (now - prev_check_tstamp) * 2:
+      return now - self.last_activity_tstamp < inactivity_time
+    else:
+      return self.last_activity_tstamp == now
 
 
 
