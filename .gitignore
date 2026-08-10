@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 *.pyo
+porting_notes.txt
+*.nix
