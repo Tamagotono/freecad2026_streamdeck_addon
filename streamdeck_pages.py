@@ -44,9 +44,9 @@ class StreamDeckPages():
     """
 
     # Get the lowercase color names
-    ptbc = bracket_color_repeated_toolbars.lower()
-    nkbc = bracket_color_page_nav_keys.lower()
-    exbc = brackets_color_expandable_tools.lower()
+    rep_brkt_clr = bracket_color_repeated_toolbars.lower()
+    nav_brkt_clr = bracket_color_page_nav_keys.lower()
+    exp_brkt_clr = brackets_color_expandable_tools.lower()
 
     # Compose the new pages to display on the Stream Deck: the pages are
     # described in a multiline string with each line in the following format:
@@ -69,10 +69,10 @@ class StreamDeckPages():
 		format(n, 1 if tbactions.actions[n].enabled else 0,
 			tbactions.actions[n].iconid,
 			tbactions.actions[n].title, t,
-			ptbc if i == 0 else \
-			exbc if n in tbactions.expanded_actions else "",
-			ptbc if i == last_action_i else \
-			exbc if not tbactions.expanded_actions.get(n, True) or \
+			rep_brkt_clr if i == 0 else \
+			exp_brkt_clr if n in tbactions.expanded_actions else "",
+			rep_brkt_clr if i == last_action_i else \
+			exp_brkt_clr if not tbactions.expanded_actions.get(n, True) or \
 				tbactions.actions[n].islastsubaction else "",
 			sv = self.SV)
 		for i, n in enumerate(tbactions.toolbar_actions[t])])
@@ -124,11 +124,11 @@ class StreamDeckPages():
         carry_lbc = ""
         for n in tbactions.toolbar_actions[t]:
           if n in tbactions.expanded_actions and tbactions.expanded_actions[n]:
-            carry_lbc = exbc
+            carry_lbc = exp_brkt_clr
             continue
-          lbc = carry_lbc or (exbc if n in tbactions.expanded_actions else "")
+          lbc = carry_lbc or (exp_brkt_clr if n in tbactions.expanded_actions else "")
           carry_lbc = ""
-          rbc = exbc if not tbactions.expanded_actions.get(n, True) or \
+          rbc = exp_brkt_clr if not tbactions.expanded_actions.get(n, True) or \
 		tbactions.actions[n].islastsubaction else ""
           keys.append("{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}{sv}{}".
 		format(t, n, 1 if tbactions.actions[n].enabled else 0,
@@ -154,7 +154,7 @@ class StreamDeckPages():
 							"{}{sv}PAGENEXT{sv}{sv}"
 							"{sv}{sv}{}{sv}{sv}{}".
 							format(page_marker(),
-								t, nkbc,
+								t, nav_brkt_clr,
 								sv = self.SV))
 
             # Add new pages. Mark all the new pages' keys with a unique page
@@ -174,7 +174,7 @@ class StreamDeckPages():
                   new_page = new_page.replace("[pagenext]",
 						"{}{sv}PAGENEXT{sv}{sv}{sv}{sv}"
 						"{}{sv}{sv}{}".
-						format(page_marker(), t, nkbc,
+						format(page_marker(), t, nav_brkt_clr,
 							sv = self.SV))
 
                 # Replace the first [pageprev] placeholder
@@ -184,11 +184,11 @@ class StreamDeckPages():
 						"{}{sv}{}{sv}".
 						format(page_marker(),
 							prev_page_toolbar,
-							nkbc, sv = self.SV) \
+							nav_brkt_clr, sv = self.SV) \
 						if prev_page_toolbar else \
 						"{}{sv}{sv}{sv}{sv}"
 						"{sv}{sv}{}{sv}".
-						format(page_marker(), nkbc,
+						format(page_marker(), nav_brkt_clr,
 							sv = self.SV), 1)
 
                 # Replace the remaining [pageprev] placeholders if any
@@ -196,7 +196,7 @@ class StreamDeckPages():
                   new_page = new_page.replace("[pageprev]",
 						"{}{sv}PAGEPREV{sv}{sv}{sv}{sv}"
 						"{}{sv}{}{sv}".
-						format(page_marker(), t, nkbc,
+						format(page_marker(), t, nav_brkt_clr,
 							sv = self.SV))
 
               # Add the new page to the pages
@@ -217,7 +217,7 @@ class StreamDeckPages():
     if self.with_nav_keys and self.pages:
       self.pages[-1] = self.pages[-1].replace("[pagenext]", "{}{sv}{sv}{sv}{sv}"
 						"{sv}{sv}{sv}{}".
-						format(page_marker(), nkbc,
+						format(page_marker(), nav_brkt_clr,
 							sv = self.SV))
 
 

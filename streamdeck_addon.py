@@ -97,7 +97,7 @@ def shutdown():
 
   streamdeck.close()
 
-  # If we have a shell command to execute when starting, execute it
+  # If we have a shell command to execute when stopping, execute it
   if params.exec_cmd_stop:
     os.system(params.exec_cmd_stop)
 
@@ -185,7 +185,7 @@ def streamdeck_update():
       streamdeck_was_open = None
       retry_open_at_tstamp = 0
 
-  # If the addon is disabled, reschedule ourselves to recheck the parameeters
+  # If the addon is disabled, reschedule ourselves to recheck the parameters
   # in 1 second
   if not params.addon_enabled:
     timer.start(1000)
@@ -194,7 +194,7 @@ def streamdeck_update():
   # Is the Stream Deck closed
   if not streamdeck.is_open():
 
-    # If it's too early to try opening it, reschedule ourselves to rechech the
+    # If it's too early to try opening it, reschedule ourselves to recheck the
     # parameters in 1 second
     if now < retry_open_at_tstamp:
       timer.start(1000)
@@ -221,7 +221,7 @@ def streamdeck_update():
       streamdeck_was_open = False
       retry_open_at_tstamp = now + 30
 
-      # Reschedule ourselves to recheck the parameeters in 1 second
+      # Reschedule ourselves to recheck the parameters in 1 second
       timer.start(1000)
       return
 
@@ -491,5 +491,5 @@ def start(FreeCAD):
   # Connect the main window's destroyed() signal to the shutdown callback
   main_window.destroyed.connect(shutdown)
 
-  # Schedule the timer for the first itme
+  # Schedule the timer for the first time
   timer.start()
