@@ -5,6 +5,7 @@
 #
 
 import re
+from collections import namedtuple
 
 
 
@@ -19,6 +20,10 @@ class StreamDeckPages():
   SK = "\x1d"
   SV = "\x1e"
 
+  # Named tuple for the 8 fields stored in each key string
+  KeyFields = namedtuple("KeyFields",
+    ["toolbar", "name", "enabled", "iconid", "toptext", "bottomtext", "lbc", "rbc"])
+
   def __init__(self, nb_streamdeck_keys, with_nav_keys):
     """__init__ method
     """
@@ -32,6 +37,12 @@ class StreamDeckPages():
     self.previous_current_page = None
     self.current_page = None
     self.current_page_no = None
+
+
+
+  def parse_key(self, ks):
+    """Parse a key string into its named fields."""
+    return self.KeyFields(*ks.split(self.SV))
 
 
 
@@ -268,16 +279,17 @@ class StreamDeckPages():
       # action names and placements, regardless of their enabled status,
       # regardless of their icons and regardless of page navigation keys
       r = re.compile("^" + self.SK.join([("{}{sv}({})?({sv}[^{sk}{sv}]*){{6}}".
-						format(t, n, sv = self.SV,
+						format(k.toolbar, k.name, sv = self.SV,
 							sk = self.SK) \
-					if n in ("PAGEPREV", "PAGENEXT") else \
+					if k.name in ("PAGEPREV", "PAGENEXT") else \
 						"{}{sv}{}{sv}.?{sv}[^{sk}{sv}]"
 						"*?{sv}{}{sv}{}{sv}{}{sv}{}".
-						format(t, n, tt, bt, lbc, rbc,
+						format(k.toolbar, k.name,
+							k.toptext, k.bottomtext,
+							k.lbc, k.rbc,
 							sv = self.SV,
 							sk = self.SK))\
-					for t, n, _, _, tt, bt, lbc, rbc in \
-						[ks.split(self.SV) \
+					for k in [self.parse_key(ks) \
 					for ks in self.current_page.\
 							split(self.SK)]]) + "$")
       for page_no, page in enumerate(self.pages):

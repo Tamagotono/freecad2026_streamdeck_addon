@@ -282,7 +282,7 @@ def streamdeck_update():
         if event_type in (streamdeck.SHORT_KEYPRESS, streamdeck.LONG_KEYPRESS):
 
           # Get the action name
-          n = keystrings[val].split(pages.SV)[1]
+          n = pages.parse_key(keystrings[val]).name
 
           # Is the key occupied?
           if n:
@@ -391,12 +391,13 @@ def streamdeck_update():
         for keyno, ks in enumerate(keystrings):
           if not pages.previous_current_page or ks != prev_keystrings[keyno]:
 
-            _, n, _, _, tt, bt, lbc, rbc = ks.split(pages.SV)
-            img = n if n in ("", "PAGEPREV", "PAGENEXT") else \
-		tbactions.actions[n].icon_as_pil_image()
+            key = pages.parse_key(ks)
+            img = key.name if key.name in ("", "PAGEPREV", "PAGENEXT") else \
+		tbactions.actions[key.name].icon_as_pil_image()
 
             try:
-              streamdeck.set_key(keyno, img, tt, bt, lbc, rbc)
+              streamdeck.set_key(keyno, img, key.toptext, key.bottomtext,
+					key.lbc, key.rbc)
             except Exception:
               _teardown_session()
               break
