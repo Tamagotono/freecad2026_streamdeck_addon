@@ -169,7 +169,8 @@ class ToolbarActions():
                 n = None
 
             # Should we keep or ignore this action?
-            if n and not action.isSeparator() and action.isIconVisibleInMenu():
+            if n and not action.isSeparator() and action.isIconVisibleInMenu() \
+				and not action.icon().isNull():
 
               # Add the action to the list of known actions if it isn't
               # already known and connect its changed signal to our callback,
@@ -199,7 +200,8 @@ class ToolbarActions():
 
                     # Should we keep or ignore this action?
                     if not subaction.isSeparator() and \
-				subaction.isIconVisibleInMenu():
+				subaction.isIconVisibleInMenu() and \
+				not subaction.icon().isNull():
 
                       # Create a name for this subaction: either the straight
                       # name from .objectName(), or the name of the parent
