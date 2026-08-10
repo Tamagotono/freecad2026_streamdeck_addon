@@ -5,11 +5,16 @@
 #
 
 import re
+from collections import namedtuple
 
 
 
 ## Classes
 #
+
+# Describes one entry in the Parameter Editor: its name, type, and default value
+_ParamDef = namedtuple("_ParamDef", ["name", "ptype", "default"])
+
 
 class _ParamObserver:
   """Parameter change observer class
@@ -24,7 +29,7 @@ class _ParamObserver:
 
 
   def slotParamChanged(self, group, pname, ptype, value):
-    """Callbacl for when any elements in the Parameter Editor groups
+    """Callback for when any elements in the Parameter Editor groups
     is changed
     """
 
@@ -37,79 +42,74 @@ class UserParameters():
   """
 
   # User-editable parameter variable names and corresponding Parameter Editor
-  # types, names and default values organized as a tree that's easily editable
-  # by the user in the Parameter Editor
+  # names, types and default values, organized as a tree matching the
+  # Parameter Editor layout.
   __top_level_group = "User parameter:BaseApp/StreamDeckAddon"
   __pgtree = {
 
-	#Parameter Editor group: [
-	#  (Parameter Editor name, Parameter Editor type, default value),
-        #  ...],
-        # ...
+    __top_level_group: {
 
-	__top_level_group: {
+      "addon_enabled":
+        _ParamDef("Enabled", "Boolean", True)},
 
-	  "addon_enabled":
-	    ("Enabled", "Boolean", True)},
+    __top_level_group + "/Device/Display/BracketColors": {
 
-	__top_level_group + "/Device/Display/BracketColors": {
+      "bracket_color_repeated_toolbars":
+        _ParamDef("ToolbarsOnEveryPage", "String", "Blue"),
 
-	  "bracket_color_repeated_toolbars":
-	    ("ToolbarsOnEveryPage", "String", "Blue"),
+      "bracket_color_page_nav_keys":
+        _ParamDef("PageNavigationKeys", "String", "Blue"),
 
-	  "bracket_color_page_nav_keys":
-	    ("PageNavigationKeys", "String", "Blue"),
+      "bracket_color_expandable_tools":
+        _ParamDef("ExpandableTools", "String", "Red")},
 
-	  "bracket_color_expandable_tools":
-	    ("ExpandableTools", "String", "Red")},
+    __top_level_group + "/Device/Display/Brightness": {
 
-	__top_level_group + "/Device/Display/Brightness": {
+      "max_brightness":
+        _ParamDef("BrightnessPercent", "Unsigned Long", 80)},
 
-	  "max_brightness":
-	    ("BrightnessPercent", "Unsigned Long", 80)},
+    __top_level_group + "/Device/Display/ScreenSaver": {
 
-	__top_level_group + "/Device/Display/ScreenSaver": {
+      "fading_enabled":
+        _ParamDef("Enabled", "Boolean", True),
 
-	  "fading_enabled":
-	    ("Enabled", "Boolean", True),
+      "fade_after_secs_inactivity":
+        _ParamDef("FadeWhenUserInactiveForSeconds", "Unsigned Long", 300),
 
-	  "fade_after_secs_inactivity":
-	    ("FadeWhenUserInactiveForSeconds", "Unsigned Long", 300),
+      "min_brightness":
+        _ParamDef("FadeToBrightness", "Unsigned Long", 0),
 
-	  "min_brightness":
-	    ("FadeToBrightness", "Unsigned Long", 0),
+      "fade_time":
+        _ParamDef("FadeTimeSeconds", "Unsigned Long", 10)},
 
-	  "fade_time":
-	    ("FadeTimeSeconds", "Unsigned Long", 10)},
+    __top_level_group + "/Device/Filters": {
 
-	__top_level_group + "/Device/Filters": {
+      "use_streamdeck_type":
+        _ParamDef("UseDeviceType", "String", ""),
 
-	  "use_streamdeck_type":
-	    ("UseDeviceType", "String", ""),
+      "use_streamdeck_serial":
+        _ParamDef("UseDeviceSerial", "String", "")},
 
-	  "use_streamdeck_serial":
-	    ("UseDeviceSerial", "String", "")},
+    __top_level_group + "/Device/keys": {
 
-	__top_level_group + "/Device/keys": {
+      "long_keypress_duration":
+        _ParamDef("LongKeyPressDurationSeconds", "Float", 0.5)},
 
-	  "long_keypress_duration":
-	    ("LongKeyPressDurationSeconds", "Float", 0.5)},
+    __top_level_group + "/StartStopCommands": {
 
-	__top_level_group + "/StartStopCommands": {
+      "exec_cmd_start":
+        _ParamDef("ExecuteShellCommandWhenStarting", "String", ""),
 
-	  "exec_cmd_start":
-	    ("ExecuteShellCommandWhenStarting", "String", ""),
+      "exec_cmd_stop":
+        _ParamDef("ExecuteShellCommandWhenStopping", "String", "")},
 
-	  "exec_cmd_stop":
-	    ("ExecuteShellCommandWhenStopping", "String", "")},
+    __top_level_group + "/ToolbarLists": {
 
-	__top_level_group + "/ToolbarLists": {
+      "excluded_toolbars":
+        _ParamDef("ToolbarsExcluded_CommaSeparated", "String", ""),
 
-	  "excluded_toolbars":
-	    ("ToolbarsExcluded_CommaSeparated", "String", ""),
-
-	  "repeated_toolbars":
-	    ("ToolbarsOnEveryPage_CommaSeparated", "String", "")}}
+      "repeated_toolbars":
+        _ParamDef("ToolbarsOnEveryPage_CommaSeparated", "String", "")}}
 
 
 
@@ -123,7 +123,7 @@ class UserParameters():
     # Initialize the user-editable parameters with the default values
     for pgpath in self.__pgtree:
       for varname in self.__pgtree[pgpath]:
-         setattr(self, varname, self.__pgtree[pgpath][varname][2])
+         setattr(self, varname, self.__pgtree[pgpath][varname].default)
 
     self.excluded_toolbars = []
     self.repeated_toolbars = []
@@ -209,7 +209,7 @@ class UserParameters():
 
       # Remove unknown parameters in the group, if there are known parameters
       # for this group
-      known_pnames = [self.__pgtree[pgpath][varname][0] \
+      known_pnames = [self.__pgtree[pgpath][varname].name \
 			for varname in self.__pgtree[pgpath]]
       if known_pnames:
         for pname, ptype in pgcontent:
@@ -219,16 +219,17 @@ class UserParameters():
       # Add or correct known parameters in the group
       for varname in self.__pgtree[pgpath]:
 
+        pdef = self.__pgtree[pgpath][varname]
         param_not_found = True
 
         # Iterate over the group's parameters
         for pname, ptype in pgcontent:
 
           # Is this parameter known?
-          if pname == self.__pgtree[pgpath][varname][0]:
+          if pname == pdef.name:
 
             # If the group parameter has the wrong type, remove it
-            if ptype != self.__pgtree[pgpath][varname][1]:
+            if ptype != pdef.ptype:
               pg_rem[ptype](pname)
 
             # If the group parameter has the correct type, update our parameter
@@ -238,8 +239,7 @@ class UserParameters():
 
         # If the parameter was not found in the group, create it
         if param_not_found:
-          pname, ptype = self.__pgtree[pgpath][varname][:2]
-          pg_set[ptype](pname, getattr(self, varname))
+          pg_set[pdef.ptype](pdef.name, getattr(self, varname))
 
     # Turn the excluded_toolbars and repeated_toolbars comma-separated strings
     # back into lists, splitting on commas or semicolons and stripping
