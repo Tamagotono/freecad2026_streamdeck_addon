@@ -263,6 +263,7 @@ def streamdeck_update():
       streamdeck_was_open = True
 
   # Get Stream Deck key press events
+  input_events = []
   try:
     input_events = streamdeck.get_input_events(params.long_keypress_duration)
   except Exception:
