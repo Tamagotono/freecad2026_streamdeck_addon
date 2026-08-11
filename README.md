@@ -1,11 +1,11 @@
 # FreeCAD Stream Deck Addon
-### Version 0.2.0
+### Version 0.3.0
 
 * [Usage](#Usage)
 * [Installation](#Installation)
 * [Settings](#Settings)
 * [Notes](#Notes)
-* [Changes in v0.2.0](#Changes-in-v020)
+* [Changes in v0.3.0](#Changes-in-v030)
 * [Discussion](#Discussion)
 * [License](#License)
 
@@ -149,7 +149,7 @@ All setting changes take effect immediately. You don't need to restart FreeCAD.
 
 
 
-## Changes in v0.2.0
+## Changes in v0.3.0
 
 Changes from the original addon by Giraut:
 
