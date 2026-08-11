@@ -5,6 +5,7 @@
 * [Installation](#Installation)
 * [Settings](#Settings)
 * [Notes](#Notes)
+* [Changes in v0.2.0](#Changes-in-v020)
 * [Discussion](#Discussion)
 * [License](#License)
 
@@ -142,9 +143,20 @@ All setting changes take effect immediately. You don't need to restart FreeCAD.
   Either the addon has control of the Stream Deck device or the other
   application does, but not both at the same time.
 
-- Tested with FreeCAD 1.1.x on Linux, and FreeCAD 0.22 on Linux and Windows, with a Stream Deck Mk2, Stream Deck XL and Stream Deck +. It may or may not work with other models.
+- Tested with FreeCAD 1.1.3 and FreeCAD Weekly Build 2026.08.05 (26.3) on Linux, with a Stream Deck Mk2, Stream Deck XL and Stream Deck +. It may or may not work with other FreeCAD versions or Stream Deck models.
 
 - This software is still under development. Please bear with me as I make it nicer 🙂
+
+
+
+## Changes in v0.2.0
+
+Changes from the original addon by Giraut:
+
+- **FreeCAD 1.1.x compatibility** — ported to Python 3.11 and PySide6
+- **Preferences panel** — settings are now accessible under **Edit ▶ Preferences ▶ Stream Deck** in addition to the Parameter Editor
+- **Bundled font** — OpenSans-Regular.ttf is included to support macOS and any platform where the expected system font is unavailable
+- Minor bug fixes
 
 
 
