@@ -1,5 +1,8 @@
-# FreeCAD Stream Deck Addon
+# FreeCAD2026 Stream Deck Addon
 ### Version 0.3.0
+This is a fork of the FreeCAD Stream Deck Addon, modified to work with FreeCAD 1.1.3 +
+The original appears to have been abandoned since no updates in 2 years and multiple pull requests have gone unanswered.  If I'm mistaken and you are the original author, please contact me and I'll be happy to help merge the changes into your branch.
+I fully admit, that Claude Code did 99% of the work to make these changes, but I verified proper operation after each step. Unit tests have been added to some portions to help maintain stability as FreeCAD continues to grow and improve.
 
 * [Usage](#Usage)
 * [Installation](#Installation)
@@ -32,8 +35,9 @@ Two keys at the bottom right of the Stream Deck are used to change pages. If the
 ## Installation
 
 ### Addon manager
+If you are reading on GitHub, then in FreeCAD, go to **Edit ▶ Preferences** and select **Addon Manager**. Under **Custom Repositories**, click **+** to add a new repository source. Then for the URL put "https://github.com/Tamagotono/freecad2026_streamdeck_addon.git" and for the branch put "master". Now you are ready to move on to the next step.
 
-In the FreeCAD menu, go to **Tools ▶ Addon manager** and select **Stream Deck Addon**:
+In the FreeCAD menu, go to **Tools ▶ Addon manager** and select **FreeCAD2026 Stream Deck Addon**:
 
 ![Addon manager](images/addon_manager.png)
 
@@ -96,7 +100,7 @@ The settings are:
 
 - **StartStopCommands ▶ ExecuteShellCommandWhenStopping**
 
-  Shell script to run when stopping. Useful to restart another Stream Deck application such as streamdeck-ui after the Stream Deck device has been releases by this addon. E.g. `streamdeck --no-ui &`. Leave blank to disable.
+  Shell script to run when stopping. Useful to restart another Stream Deck application such as streamdeck-ui after the Stream Deck device has been released by this addon. E.g. `streamdeck --no-ui &`. Leave blank to disable.
 
 - **ToolbarLists ▶ ToolbarsExcluded_CommaSeparated**
 
@@ -153,7 +157,7 @@ All setting changes take effect immediately. You don't need to restart FreeCAD.
 
 Changes from the original addon by Giraut:
 
-- **FreeCAD 1.1.x compatibility** — ported to Python 3.11 and PySide6
+- **FreeCAD 1.1.x compatibility** — ported to Python 3.11 and PySide6. Also tested with FreeCAD Weekly Build 2026.08.05 (26.3)
 - **Preferences panel** — settings are now accessible under **Edit ▶ Preferences ▶ Stream Deck** in addition to the Parameter Editor
 - **Bundled font** — OpenSans-Regular.ttf is included to support macOS and any platform where the expected system font is unavailable
 - Minor bug fixes
