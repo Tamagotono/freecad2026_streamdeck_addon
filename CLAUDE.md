@@ -19,11 +19,11 @@ The addon runs inside FreeCAD's Python environment (Python 3.11 in FreeCAD 1.1.x
 
 The addon directory is added to `sys.path` by FreeCAD, so all inter-module imports are bare absolute imports (e.g. `from parameters import UserParameters`).
 
-## Bundled Dependencies
+## Dependencies
 
-- **`PIL/` + `pillow.libs/`** — Pillow 12.3.0, compiled for Python 3.11 linux x86_64. RPATH is set to `$ORIGIN/../pillow.libs` so bundled `.so` files load correctly.
-- **`StreamDeck/`** — streamdeck 0.9.8 Python library.
-- **`streamdeck-0.9.8.dist-info/`** and **`pillow-12.3.0.dist-info/`** — Package metadata for the above.
+`pillow` and `streamdeck` are declared in `package.xml` and installed automatically by the FreeCAD Addon Manager. They are not tracked in git. For manual installs or AppImage users, install them into the addon directory with:
+
+    python3 -m pip install --target=<addon-dir> pillow streamdeck
 
 ## FreeCAD 1.1.x Compatibility Notes
 
@@ -41,4 +41,4 @@ All user parameters live under `Tools > Edit Parameters > BaseApp > StreamDeckAd
 
 ## No Build Step
 
-This is a pure Python addon (plus pre-compiled `.so` extensions). There is no build process. Changes to `.py` files take effect after restarting FreeCAD (or deleting `__pycache__/*.pyc` to force recompilation).
+This is a pure Python addon. There is no build process. Changes to `.py` files take effect after restarting FreeCAD (or deleting `__pycache__/*.pyc` to force recompilation).

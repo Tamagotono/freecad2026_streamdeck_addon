@@ -3,3 +3,10 @@ __pycache__/
 *.pyo
 porting_notes.txt
 *.nix
+
+# Bundled Python dependencies — installed by the Addon Manager via package.xml
+PIL/
+pillow.libs/
+StreamDeck/
+pillow-*.dist-info/
+streamdeck-*.dist-info/
