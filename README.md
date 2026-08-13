@@ -1,5 +1,5 @@
 # FreeCAD2026 Stream Deck Addon
-### Version 0.3.1
+### Version 0.3.2
 This is a fork of the FreeCAD Stream Deck Addon, modified to work with FreeCAD 1.1.3 +
 The original appears to have been abandoned since no updates in 2 years and multiple pull requests have gone unanswered.  If I'm mistaken and you are the original author, please contact me and I'll be happy to help merge the changes into your branch.
 I fully admit, that Claude Code did 99% of the work to make these changes, but I verified proper operation after each step. Unit tests have been added to some portions to help maintain stability as FreeCAD continues to grow and improve.
@@ -8,7 +8,7 @@ I fully admit, that Claude Code did 99% of the work to make these changes, but I
 * [Installation](#Installation)
 * [Settings](#Settings)
 * [Notes](#Notes)
-* [Changes in v0.3.1](#Changes-in-v031)
+* [Changes in v0.3.2](#Changes-in-v032)
 * [Discussion](#Discussion)
 * [License](#License)
 
@@ -153,7 +153,7 @@ All setting changes take effect immediately. You don't need to restart FreeCAD.
 
 
 
-## Changes in v0.3.1
+## Changes in v0.3.2
 
 Changes from the original addon by Giraut:
 
