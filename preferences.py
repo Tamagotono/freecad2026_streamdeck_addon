@@ -50,6 +50,8 @@ class StreamDeckPreferencePage:
     self._max_brightness.setRange(0, 100)
     self._max_brightness.setSuffix(" %")
     disp_layout.addRow("Maximum brightness:", self._max_brightness)
+    self._font_family = QtGui.QFontComboBox()
+    disp_layout.addRow("Key text font:", self._font_family)
     self._font_size = QtGui.QSpinBox()
     self._font_size.setRange(6, 72)
     self._font_size.setSuffix(" pt")
@@ -126,6 +128,9 @@ class StreamDeckPreferencePage:
     self._max_brightness.setValue(pg.GetUnsigned("BrightnessPercent", 80))
 
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Text")
+    family = pg.GetString("KeyTextFontFamily", "")
+    if family:
+      self._font_family.setCurrentFont(QtGui.QFont(family))
     self._font_size.setValue(pg.GetUnsigned("KeyTextFontSize", 14))
 
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/ScreenSaver")
@@ -167,6 +172,7 @@ class StreamDeckPreferencePage:
     pg.SetUnsigned("BrightnessPercent", self._max_brightness.value())
 
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Text")
+    pg.SetString("KeyTextFontFamily", self._font_family.currentFont().family())
     pg.SetUnsigned("KeyTextFontSize", self._font_size.value())
 
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/ScreenSaver")

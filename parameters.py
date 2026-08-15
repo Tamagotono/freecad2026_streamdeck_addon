@@ -70,6 +70,9 @@ class UserParameters():
 
     __top_level_group + "/Device/Display/Text": {
 
+      "streamdeck_key_text_font_family":
+        _ParamDef("KeyTextFontFamily", "String", ""),
+
       "streamdeck_key_text_font_size":
         _ParamDef("KeyTextFontSize", "Unsigned Long", 14)},
 
@@ -134,8 +137,6 @@ class UserParameters():
     self.repeated_toolbars = []
 
     # Add the non user-editable parameters
-    self.streamdeck_key_text_font_filename_linux = "OpenSans-Regular.ttf"
-    self.streamdeck_key_text_font_filename_windows = "arial.ttf"
     self.prev_streamdeck_key_icon = "prev.png"
     self.next_streamdeck_key_icon = "next.png"
     self.blank_streamdeck_key_icon = "blank.png"

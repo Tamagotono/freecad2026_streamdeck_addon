@@ -7,7 +7,6 @@
 
 import re
 import os
-import sys
 from time import time
 
 import FreeCADGui as Gui
@@ -135,8 +134,6 @@ def streamdeck_update():
 
   global main_window
 
-  global font_filename
-
   global streamdeck
   global streamdeck_was_open
   global show_help
@@ -177,10 +174,13 @@ def streamdeck_update():
 			params.prev_bracket_color_expandable_tools:
       update_actions = True
 
-    # Has the font size changed?
+    # Has the font changed?
     if params.streamdeck_key_text_font_size != \
-		params.prev_streamdeck_key_text_font_size:
-      streamdeck.reload_font(font_filename, params.streamdeck_key_text_font_size)
+		params.prev_streamdeck_key_text_font_size or \
+	params.streamdeck_key_text_font_family != \
+		params.prev_streamdeck_key_text_font_family:
+      streamdeck.reload_font(params.streamdeck_key_text_font_family,
+				params.streamdeck_key_text_font_size)
       force_full_redraw = True
       update_actions = True
       next_actions_update_tstamp = 0
@@ -445,8 +445,6 @@ def start(FreeCAD):
 
   global main_window
 
-  global font_filename
-
   global streamdeck
   global streamdeck_was_open
   global show_help
@@ -456,9 +454,6 @@ def start(FreeCAD):
   global timer
   global timer_reschedule_every_ms
   global next_actions_update_tstamp
-
-  # Determine the platform
-  is_win = sys.platform[0:3] == "win"
 
   # Determine the installation directory
   install_dir = os.path.dirname(__file__)
@@ -477,16 +472,11 @@ def start(FreeCAD):
   # Create the parameters
   params = UserParameters(FreeCAD)
 
-  # Get the path to the appropriate font to write in the Stream Deck keys
-  # depending on the platform
-  font_filename = as_installed(params.streamdeck_key_text_font_filename_windows \
-				if is_win else \
-			params.streamdeck_key_text_font_filename_linux)
-
   force_full_redraw = False
 
   # Initialize the streamdeck object
-  streamdeck = StreamDeck(font_filename, params.streamdeck_key_text_font_size,
+  streamdeck = StreamDeck(params.streamdeck_key_text_font_family,
+				params.streamdeck_key_text_font_size,
 				as_installed(params.prev_streamdeck_key_icon),
 				as_installed(params.next_streamdeck_key_icon),
 				as_installed(params.blank_streamdeck_key_icon),

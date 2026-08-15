@@ -4,10 +4,12 @@
 ## Modules
 #
 
-import os
+import io
 from time import time
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
+
+from PySide import QtCore, QtGui
 
 from StreamDeck.Devices.StreamDeck import ControlType, DialEventType
 from StreamDeck.DeviceManager import DeviceManager
@@ -29,10 +31,10 @@ class StreamDeck():
 
 
 
-  def __init__(self, ttf_file, ttf_size, prev_image_file, next_image_file,
+  def __init__(self, font_family, font_size, prev_image_file, next_image_file,
 		blank_image_file, broken_image_file):
     """__init__ method
-    Load the specified TrueType font of the specified size and load the
+    Load the specified font family at the specified size and load the
     predefined images
     """
 
@@ -44,14 +46,7 @@ class StreamDeck():
     self.__brightness = None
     self.__fade_start_tstamp = None
 
-    # Load the TrueType font, with fallbacks for missing/unavailable font files
-    try:
-      self.font = ImageFont.truetype(ttf_file, ttf_size)
-    except OSError:
-      try:
-        self.font = ImageFont.truetype(os.path.basename(ttf_file), ttf_size)
-      except OSError:
-        self.font = ImageFont.load_default(size=ttf_size)
+    self.font = QtGui.QFont(font_family, font_size)
 
     # Preload icons for the Stream Deck keys
     self.prev_image = Image.open(prev_image_file)
@@ -61,25 +56,16 @@ class StreamDeck():
 
     # Determine the margins between the icon and the edges of the Stream Deck
     # keys to leave just enough space for the top and bottom text
-    _, font_text_min_y, _, font_text_max_y = self.font.getbbox("A!_j")
-    self.margins = [font_text_max_y - font_text_min_y + 1] * 4
+    self.margins = [QtGui.QFontMetrics(self.font).height() + 1] * 4
 
 
 
-  def reload_font(self, ttf_file, ttf_size):
-    """Reload the TrueType font with a new size and recalculate key margins
+  def reload_font(self, font_family, font_size):
+    """Reload the font with a new family and/or size and recalculate key margins
     """
 
-    try:
-      self.font = ImageFont.truetype(ttf_file, ttf_size)
-    except OSError:
-      try:
-        self.font = ImageFont.truetype(os.path.basename(ttf_file), ttf_size)
-      except OSError:
-        self.font = ImageFont.load_default(size=ttf_size)
-
-    _, font_text_min_y, _, font_text_max_y = self.font.getbbox("A!_j")
-    self.margins = [font_text_max_y - font_text_min_y + 1] * 4
+    self.font = QtGui.QFont(font_family, font_size)
+    self.margins = [QtGui.QFontMetrics(self.font).height() + 1] * 4
 
 
 
@@ -347,49 +333,67 @@ class StreamDeck():
       image = PILHelper.create_scaled_image(self.dev, self.broken_image,
 						margins = self.margins)
 
-    xm = image.width / 2	# Middle horizontal coordinate in the image
-    xr = image.width - 1	# Right horizontal coordinate in the image
-    yb = image.height - 1	# Bottom vertical coordinate in the image
+    w = image.width
+    h = image.height
 
     # Do we have text or brackets to add to the icon?
     if top_text or bottom_text or left_bracket_color or right_bracket_color:
 
-      # If we have text, write it on top of the image
-      draw = ImageDraw.Draw(image)
+      img_bytes = image.convert("RGB").tobytes("raw", "RGB")
+      qimg = QtGui.QImage(img_bytes, w, h, w * 3,
+			QtGui.QImage.Format.Format_RGB888)
+
+      painter = QtGui.QPainter(qimg)
+      painter.setFont(self.font)
+      margin = self.margins[0]
 
       if top_text:
-        draw.text((xm, 0), text = top_text,
-			font = self.font, anchor = "mt", fill = "white")
+        painter.setPen(QtGui.QColor("white"))
+        painter.drawText(QtCore.QRect(0, 0, w, margin),
+			QtCore.Qt.AlignmentFlag.AlignHCenter |
+			QtCore.Qt.AlignmentFlag.AlignVCenter,
+			top_text)
 
       if bottom_text:
-        draw.text((xm, yb), text = bottom_text,
-			font = self.font, anchor = "mb", fill = "white")
+        painter.setPen(QtGui.QColor("white"))
+        painter.drawText(QtCore.QRect(0, h - margin, w, margin),
+			QtCore.Qt.AlignmentFlag.AlignHCenter |
+			QtCore.Qt.AlignmentFlag.AlignVCenter,
+			bottom_text)
 
       # If we have brackets, draw them. If the color name is incorrect, default
       # to dark grey
       if left_bracket_color:
-        for color in (left_bracket_color, "darkslategrey"):
-          try:
-            draw.line([(self.margins[3] - 2, self.margins[0] + 2),
-			(4, self.margins[0] + 2),
-			(4, yb - self.margins[2] - 2),
-			(self.margins[3] - 2, yb - self.margins[2] - 2)],
-			width = 5, fill = color)
+        for color_name in (left_bracket_color, "darkslategrey"):
+          color = QtGui.QColor(color_name)
+          if color.isValid():
+            painter.setPen(QtGui.QPen(color, 5))
+            x1, x2 = self.margins[3] - 2, 4
+            y1, y2 = self.margins[0] + 2, (h - 1) - self.margins[2] - 2
+            painter.drawLine(x1, y1, x2, y1)
+            painter.drawLine(x2, y1, x2, y2)
+            painter.drawLine(x2, y2, x1, y2)
             break
-          except Exception:
-            pass
 
       if right_bracket_color:
-        for color in (right_bracket_color, "darkslategrey"):
-          try:
-            draw.line([(xr - self.margins[1] + 2, self.margins[0] + 2),
-			(xr - 4, self.margins[0] + 2),
-			(xr - 4, yb - self.margins[2] - 2),
-			(xr - self.margins[1] + 2, yb - self.margins[2] - 2)],
-			width = 5, fill = color)
+        for color_name in (right_bracket_color, "darkslategrey"):
+          color = QtGui.QColor(color_name)
+          if color.isValid():
+            painter.setPen(QtGui.QPen(color, 5))
+            x1, x2 = (w - 1) - self.margins[1] + 2, (w - 1) - 4
+            y1, y2 = self.margins[0] + 2, (h - 1) - self.margins[2] - 2
+            painter.drawLine(x1, y1, x2, y1)
+            painter.drawLine(x2, y1, x2, y2)
+            painter.drawLine(x2, y2, x1, y2)
             break
-          except Exception:
-            pass
+
+      painter.end()
+
+      qbf = QtCore.QBuffer()
+      qbf.open(QtCore.QIODevice.WriteOnly)
+      qimg.save(qbf, "PPM")
+      qbf.close()
+      image = Image.open(io.BytesIO(bytes(qbf.data())))
 
     # Upload the image to the key
     self.dev.set_key_image(keyno, PILHelper.to_native_key_format(self.dev,
