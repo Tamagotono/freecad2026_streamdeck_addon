@@ -68,6 +68,11 @@ class UserParameters():
       "max_brightness":
         _ParamDef("BrightnessPercent", "Unsigned Long", 80)},
 
+    __top_level_group + "/Device/Display/Text": {
+
+      "streamdeck_key_text_font_size":
+        _ParamDef("KeyTextFontSize", "Unsigned Long", 14)},
+
     __top_level_group + "/Device/Display/ScreenSaver": {
 
       "fading_enabled":
@@ -131,7 +136,6 @@ class UserParameters():
     # Add the non user-editable parameters
     self.streamdeck_key_text_font_filename_linux = "OpenSans-Regular.ttf"
     self.streamdeck_key_text_font_filename_windows = "arial.ttf"
-    self.streamdeck_key_text_font_size = 14
     self.prev_streamdeck_key_icon = "prev.png"
     self.next_streamdeck_key_icon = "next.png"
     self.blank_streamdeck_key_icon = "blank.png"

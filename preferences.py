@@ -50,6 +50,10 @@ class StreamDeckPreferencePage:
     self._max_brightness.setRange(0, 100)
     self._max_brightness.setSuffix(" %")
     disp_layout.addRow("Maximum brightness:", self._max_brightness)
+    self._font_size = QtGui.QSpinBox()
+    self._font_size.setRange(6, 72)
+    self._font_size.setSuffix(" pt")
+    disp_layout.addRow("Key text font size:", self._font_size)
     outer.addWidget(disp_group)
 
     # Screen Saver
@@ -121,6 +125,9 @@ class StreamDeckPreferencePage:
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Brightness")
     self._max_brightness.setValue(pg.GetUnsigned("BrightnessPercent", 80))
 
+    pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Text")
+    self._font_size.setValue(pg.GetUnsigned("KeyTextFontSize", 14))
+
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/ScreenSaver")
     self._fading_enabled.setChecked(pg.GetBool("Enabled", True))
     self._fade_after.setValue(pg.GetUnsigned("FadeWhenUserInactiveForSeconds", 300))
@@ -158,6 +165,9 @@ class StreamDeckPreferencePage:
 
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Brightness")
     pg.SetUnsigned("BrightnessPercent", self._max_brightness.value())
+
+    pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Text")
+    pg.SetUnsigned("KeyTextFontSize", self._font_size.value())
 
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/ScreenSaver")
     pg.SetBool("Enabled", self._fading_enabled.isChecked())

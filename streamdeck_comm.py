@@ -66,6 +66,23 @@ class StreamDeck():
 
 
 
+  def reload_font(self, ttf_file, ttf_size):
+    """Reload the TrueType font with a new size and recalculate key margins
+    """
+
+    try:
+      self.font = ImageFont.truetype(ttf_file, ttf_size)
+    except OSError:
+      try:
+        self.font = ImageFont.truetype(os.path.basename(ttf_file), ttf_size)
+      except OSError:
+        self.font = ImageFont.load_default(size=ttf_size)
+
+    _, font_text_min_y, _, font_text_max_y = self.font.getbbox("A!_j")
+    self.margins = [font_text_max_y - font_text_min_y + 1] * 4
+
+
+
 
   def open(self, device_type, serial_number):
     """Try to open and reset the Stream Deck device with the specified device

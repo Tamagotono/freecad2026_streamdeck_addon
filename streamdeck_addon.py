@@ -135,10 +135,13 @@ def streamdeck_update():
 
   global main_window
 
+  global font_filename
+
   global streamdeck
   global streamdeck_was_open
   global show_help
   global retry_open_at_tstamp
+  global force_full_redraw
 
   global update_actions
 
@@ -173,6 +176,14 @@ def streamdeck_update():
 	params.bracket_color_expandable_tools != \
 			params.prev_bracket_color_expandable_tools:
       update_actions = True
+
+    # Has the font size changed?
+    if params.streamdeck_key_text_font_size != \
+		params.prev_streamdeck_key_text_font_size:
+      streamdeck.reload_font(font_filename, params.streamdeck_key_text_font_size)
+      force_full_redraw = True
+      update_actions = True
+      next_actions_update_tstamp = 0
 
     # Has any parameter affecting the connection with the Stream Deck device
     # changed?
@@ -389,7 +400,8 @@ def streamdeck_update():
           prev_keystrings = pages.previous_current_page.split(pages.SK)
 
         for keyno, ks in enumerate(keystrings):
-          if not pages.previous_current_page or ks != prev_keystrings[keyno]:
+          if force_full_redraw or not pages.previous_current_page or \
+		ks != prev_keystrings[keyno]:
 
             key = pages.parse_key(ks)
             img = key.name if key.name in ("", "PAGEPREV", "PAGENEXT") else \
@@ -401,6 +413,8 @@ def streamdeck_update():
             except Exception:
               _teardown_session()
               break
+
+  force_full_redraw = False
 
   # Determine if the user is active and set the brightness of the Stream Deck's
   # display accordingly
@@ -431,10 +445,13 @@ def start(FreeCAD):
 
   global main_window
 
+  global font_filename
+
   global streamdeck
   global streamdeck_was_open
   global show_help
   global retry_open_at_tstamp
+  global force_full_redraw
 
   global timer
   global timer_reschedule_every_ms
@@ -465,6 +482,8 @@ def start(FreeCAD):
   font_filename = as_installed(params.streamdeck_key_text_font_filename_windows \
 				if is_win else \
 			params.streamdeck_key_text_font_filename_linux)
+
+  force_full_redraw = False
 
   # Initialize the streamdeck object
   streamdeck = StreamDeck(font_filename, params.streamdeck_key_text_font_size,
