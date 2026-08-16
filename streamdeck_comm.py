@@ -304,16 +304,19 @@ class StreamDeck():
 
   def set_key(self, keyno, image,
 		top_text = None, bottom_text = None,
-		left_bracket_color = None, right_bracket_color = None):
+		left_bracket_color = None, right_bracket_color = None,
+		icon_scale = 255):
     """Upload an image to a Stream Deck key number with optional text at the top
     and at the bottom, and optional colored brackets left and right of the
     image
     If image is None or "", load the blank icon
     If image is "PAGEPREV", load the previous icon
     If image is "PAGENEXT", load the next icon
-    If image is a string, treat it as a filename load this image file
-    In case of error loading the image file and/or scaling it, load and scale a
-    "broken image" icon instead
+    icon_scale controls how the icon fills the key:
+      255 (Auto): icon sized to leave room for text (default)
+      0:          no icon (blank background), text still shown
+      1-99:       icon fills that percentage of the key, text still shown
+      100:        icon fills the entire key, text suppressed
     """
 
     if not image:
@@ -325,19 +328,39 @@ class StreamDeck():
     elif image == "PAGENEXT":
       image = self.next_image
 
+    # Determine rendering margins and whether to show text
+    if icon_scale > 100:		# Auto
+      margins = self.margins
+      show_text = True
+    elif icon_scale == 0:		# No icon
+      image = self.blank_image
+      margins = self.margins
+      show_text = True
+    elif icon_scale == 100:		# Icon only
+      margins = [0, 0, 0, 0]
+      show_text = False
+    else:				# 1-99: proportional
+      key_fmt = self.dev.key_image_format()
+      key_w, key_h = key_fmt['size']
+      margin_h = int(key_h * (100 - icon_scale) / 200)
+      margin_w = int(key_w * (100 - icon_scale) / 200)
+      margins = [margin_h, margin_w, margin_h, margin_w]
+      show_text = True
+
     try:
       image = PILHelper.create_scaled_image(self.dev, image,
-						margins = self.margins)
+						margins = margins)
 
     except Exception:
       image = PILHelper.create_scaled_image(self.dev, self.broken_image,
-						margins = self.margins)
+						margins = margins)
 
     w = image.width
     h = image.height
 
     # Do we have text or brackets to add to the icon?
-    if top_text or bottom_text or left_bracket_color or right_bracket_color:
+    if (show_text and (top_text or bottom_text)) or \
+		left_bracket_color or right_bracket_color:
 
       img_bytes = image.convert("RGB").tobytes("raw", "RGB")
       qimg = QtGui.QImage(img_bytes, w, h, w * 3,
@@ -347,14 +370,14 @@ class StreamDeck():
       painter.setFont(self.font)
       margin = self.margins[0]
 
-      if top_text:
+      if show_text and top_text:
         painter.setPen(QtGui.QColor("white"))
         painter.drawText(QtCore.QRect(0, 0, w, margin),
 			QtCore.Qt.AlignmentFlag.AlignHCenter |
 			QtCore.Qt.AlignmentFlag.AlignVCenter,
 			top_text)
 
-      if bottom_text:
+      if show_text and bottom_text:
         painter.setPen(QtGui.QColor("white"))
         painter.drawText(QtCore.QRect(0, h - margin, w, margin),
 			QtCore.Qt.AlignmentFlag.AlignHCenter |

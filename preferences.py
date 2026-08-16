@@ -50,6 +50,19 @@ class StreamDeckPreferencePage:
     self._max_brightness.setRange(0, 100)
     self._max_brightness.setSuffix(" %")
     disp_layout.addRow("Maximum brightness:", self._max_brightness)
+    icon_scale_widget = QtGui.QWidget()
+    icon_scale_layout = QtGui.QHBoxLayout(icon_scale_widget)
+    icon_scale_layout.setContentsMargins(0, 0, 0, 0)
+    self._icon_scale_auto = QtGui.QCheckBox("Auto")
+    self._icon_scale = QtGui.QSpinBox()
+    self._icon_scale.setRange(0, 100)
+    self._icon_scale.setSuffix(" %")
+    self._icon_scale_auto.toggled.connect(
+      lambda checked: self._icon_scale.setEnabled(not checked))
+    icon_scale_layout.addWidget(self._icon_scale_auto)
+    icon_scale_layout.addWidget(self._icon_scale)
+    icon_scale_layout.addStretch()
+    disp_layout.addRow("Icon scale:", icon_scale_widget)
     self._font_family = QtGui.QFontComboBox()
     disp_layout.addRow("Key text font:", self._font_family)
     self._font_size = QtGui.QSpinBox()
@@ -127,6 +140,14 @@ class StreamDeckPreferencePage:
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Brightness")
     self._max_brightness.setValue(pg.GetUnsigned("BrightnessPercent", 80))
 
+    pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Icons")
+    scale = pg.GetUnsigned("IconScale", 255)
+    if scale > 100:
+      self._icon_scale_auto.setChecked(True)
+    else:
+      self._icon_scale_auto.setChecked(False)
+      self._icon_scale.setValue(scale)
+
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Text")
     family = pg.GetString("KeyTextFontFamily", "")
     if family:
@@ -170,6 +191,10 @@ class StreamDeckPreferencePage:
 
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Brightness")
     pg.SetUnsigned("BrightnessPercent", self._max_brightness.value())
+
+    pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Icons")
+    pg.SetUnsigned("IconScale",
+      255 if self._icon_scale_auto.isChecked() else self._icon_scale.value())
 
     pg = FreeCAD.ParamGet(_ROOT + "/Device/Display/Text")
     pg.SetString("KeyTextFontFamily", self._font_family.currentFont().family())

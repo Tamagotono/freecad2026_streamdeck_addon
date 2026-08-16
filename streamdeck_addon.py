@@ -175,12 +175,18 @@ def streamdeck_update():
       update_actions = True
 
     # Has the font changed?
-    if params.streamdeck_key_text_font_size != \
+    font_changed = \
+	params.streamdeck_key_text_font_size != \
 		params.prev_streamdeck_key_text_font_size or \
 	params.streamdeck_key_text_font_family != \
-		params.prev_streamdeck_key_text_font_family:
+		params.prev_streamdeck_key_text_font_family
+    if font_changed:
       streamdeck.reload_font(params.streamdeck_key_text_font_family,
 				params.streamdeck_key_text_font_size)
+
+    # Has any display setting changed?
+    if font_changed or \
+		params.icon_scale != params.prev_icon_scale:
       force_full_redraw = True
       update_actions = True
       next_actions_update_tstamp = 0
@@ -409,7 +415,8 @@ def streamdeck_update():
 
             try:
               streamdeck.set_key(keyno, img, key.toptext, key.bottomtext,
-					key.left_brkt_clr, key.right_brkt_clr)
+					key.left_brkt_clr, key.right_brkt_clr,
+					icon_scale = params.icon_scale)
             except Exception:
               _teardown_session()
               break

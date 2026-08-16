@@ -68,6 +68,11 @@ class UserParameters():
       "max_brightness":
         _ParamDef("BrightnessPercent", "Unsigned Long", 80)},
 
+    __top_level_group + "/Device/Display/Icons": {
+
+      "icon_scale":
+        _ParamDef("IconScale", "Unsigned Long", 255)},
+
     __top_level_group + "/Device/Display/Text": {
 
       "streamdeck_key_text_font_family":
