@@ -1,5 +1,5 @@
 # FreeCAD2026 Stream Deck Addon
-### Version 0.3.2
+### Version 0.4.0
 This is a fork of the FreeCAD Stream Deck Addon, modified to work with FreeCAD 1.1.3 +
 The original appears to have been abandoned since no updates in 2 years and multiple pull requests have gone unanswered.  If I'm mistaken and you are the original author, please contact me and I'll be happy to help merge the changes into your branch.
 I fully admit, that Claude Code did 99% of the work to make these changes, but I verified proper operation after each step. Unit tests have been added to some portions to help maintain stability as FreeCAD continues to grow and improve.
@@ -8,6 +8,7 @@ I fully admit, that Claude Code did 99% of the work to make these changes, but I
 * [Installation](#Installation)
 * [Settings](#Settings)
 * [Notes](#Notes)
+* [Changes in v0.4.0](#Changes-in-v040)
 * [Changes in v0.3.2](#Changes-in-v032)
 * [Discussion](#Discussion)
 * [License](#License)
@@ -129,6 +130,22 @@ The settings are:
 
   How bright the Stream Deck's display should be. Percentage from 0% to 100%.
 
+- **Display ▶ Icons ▶ IconScale**
+
+  Controls how much of each key the tool icon occupies:
+  - **Auto** (default) — icon is sized to leave room for text labels above and below.
+  - **0%** — no icon; blank background with text labels only.
+  - **1–99%** — icon fills that percentage of the key; text labels are shown in the remaining space.
+  - **100%** — icon fills the entire key; text labels are suppressed.
+
+- **Display ▶ Text ▶ KeyTextFontFamily**
+
+  The font family used for key labels. Leave blank to use the system default. Any font installed on your system can be selected via **Edit ▶ Preferences ▶ Stream Deck ▶ Display ▶ Key text font**.
+
+- **Display ▶ Text ▶ KeyTextFontSize**
+
+  The font size used for key labels, in points. Default is 14.
+
 - **Display ▶ ScreenSaver ▶ Enabled**  
   **Display ▶ ScreenSaver ▶ FadeWhenUserInactiveForSeconds**  
   **Display ▶ ScreenSaver ▶ FadeToBrightness**  
@@ -150,6 +167,14 @@ All setting changes take effect immediately. You don't need to restart FreeCAD.
 - Tested with FreeCAD 1.1.3 and FreeCAD Weekly Build 2026.08.05 (26.3) on Linux, with a Stream Deck Mk2, Stream Deck XL and Stream Deck +. It may or may not work with other FreeCAD versions or Stream Deck models.
 
 - This software is still under development. Please bear with me as I make it nicer 🙂
+
+
+
+## Changes in v0.4.0
+
+- **Configurable icon scale** — a new Icon Scale setting (0–100%, or Auto) controls how much of each key the tool icon fills. Auto preserves existing behavior; 0% shows a blank background with text labels only; 100% fills the key entirely with no text; values in between scale the icon proportionally while keeping labels.
+- **Configurable key text font** — font family can now be selected from any system-installed font via **Edit ▶ Preferences ▶ Stream Deck**. Text rendering now uses Qt instead of PIL, providing proper cross-platform font support without requiring a bundled font file.
+- **Configurable key text font size** — font size is now adjustable in the Preferences panel and Parameter Editor. Changes take effect immediately.
 
 
 
