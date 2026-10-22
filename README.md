@@ -4,6 +4,10 @@ This is a fork of the FreeCAD Stream Deck Addon, modified to work with FreeCAD 1
 The original appears to have been abandoned since no updates in 2 years and multiple pull requests have gone unanswered.  If I'm mistaken and you are the original author, please contact me and I'll be happy to help merge the changes into your branch.
 I fully admit, that Claude Code did 99% of the work to make these changes, but I verified proper operation after each step. Unit tests have been added to some portions to help maintain stability as FreeCAD continues to grow and improve.
 
+***If you run Windows and use the official Streamdeck application, you should check out this fork which is a more elegant solution: https://github.com/Rh1no-818/freecad_streamdeck_addon***
+ 
+***I don't run Windows, so haven't tested it, but in theory it should be a better way to implement this utility.***
+
 * [Usage](#Usage)
 * [Installation](#Installation)
 * [Settings](#Settings)
